@@ -14,6 +14,8 @@ namespace StatefulBackendService
     using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
     using Microsoft.ServiceFabric.Services.Communication.Runtime;
     using Microsoft.ServiceFabric.Services.Runtime;
+    using Microsoft.ApplicationInsights.Extensibility;
+    using Microsoft.ApplicationInsights.ServiceFabric;
 
     /// <summary>
     /// The FabricRuntime creates an instance of this class for each service type instance. 
@@ -46,11 +48,12 @@ namespace StatefulBackendService
                                     .ConfigureServices(
                                         services => services
                                             .AddSingleton<IReliableStateManager>(this.StateManager)
-                                            .AddSingleton<StatefulServiceContext>(serviceContext))
-                                    .UseContentRoot(Directory.GetCurrentDirectory())
+                                            .AddSingleton<StatefulServiceContext>(serviceContext)
+                                            .AddSingleton<ITelemetryInitializer>((serviceProvider) => FabricTelemetryInitializerExtension.CreateFabricTelemetryInitializer(serviceContext)))
                                     .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.UseUniqueServiceUrl)
                                     .UseStartup<Startup>()
                                     .UseUrls(url)
+                                    .UseApplicationInsights()
                                     .Build();
                             }))
             };

@@ -14,6 +14,8 @@ namespace WebService
     using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
     using Microsoft.ServiceFabric.Services.Communication.Runtime;
     using Microsoft.ServiceFabric.Services.Runtime;
+    using Microsoft.ApplicationInsights.Extensibility;
+    using Microsoft.ApplicationInsights.ServiceFabric;
 
     /// <summary>
     /// The FabricRuntime creates an instance of this class for each service type instance. 
@@ -49,11 +51,13 @@ namespace WebService
                                             .AddSingleton<ConfigSettings>(new ConfigSettings(serviceContext))
                                             .AddSingleton<HttpClient>(new HttpClient())
                                             .AddSingleton<FabricClient>(new FabricClient())
-                                            .AddSingleton<StatelessServiceContext>(serviceContext))
+                                            .AddSingleton<StatelessServiceContext>(serviceContext)
+                                            .AddSingleton<ITelemetryInitializer>((serviceProvider) => FabricTelemetryInitializerExtension.CreateFabricTelemetryInitializer(serviceContext)))
                                     .UseContentRoot(Directory.GetCurrentDirectory())
                                     .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
                                     .UseStartup<Startup>()
                                     .UseUrls(url)
+                                    .UseApplicationInsights()
                                     .Build();
                             }))
             };

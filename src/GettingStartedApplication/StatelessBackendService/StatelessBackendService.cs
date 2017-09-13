@@ -14,6 +14,9 @@ namespace StatelessBackendService
     using Microsoft.ServiceFabric.Services.Communication.Runtime;
     using Microsoft.ServiceFabric.Services.Remoting.Runtime;
     using Microsoft.ServiceFabric.Services.Runtime;
+    using Microsoft.ApplicationInsights.ServiceFabric;
+    using Microsoft.ServiceFabric.Services.Remoting.FabricTransport.Runtime;
+    using Microsoft.ApplicationInsights.ServiceFabric.Remoting.Activities;
 
     /// <summary>
     /// An instance of this class is created for each service instance by the Service Fabric runtime.
@@ -38,9 +41,12 @@ namespace StatelessBackendService
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
+            FabricTelemetryInitializerExtension.SetServiceCallContext(this.Context);
+
             return new ServiceInstanceListener[1]
             {
-                new ServiceInstanceListener(this.CreateServiceRemotingListener)
+                //new ServiceInstanceListener(this.CreateServiceRemotingListener)
+                new ServiceInstanceListener(context => new FabricTransportServiceRemotingListener(context, new CorrelatingRemotingMessageHandler(context, this)))
             };
         }
 

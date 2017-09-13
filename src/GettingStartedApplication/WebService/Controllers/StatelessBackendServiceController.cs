@@ -13,6 +13,8 @@ namespace WebService.Controllers
     using StatelessBackendService.Interfaces;
     using System.Fabric;
     using System;
+    using Microsoft.ApplicationInsights.ServiceFabric.Remoting.Activities;
+    using Microsoft.ServiceFabric.Services.Remoting.FabricTransport.Client;
 
     [Route("api/[controller]")]
     public class StatelessBackendServiceController : Controller
@@ -32,7 +34,9 @@ namespace WebService.Controllers
         {
             string serviceUri = this.serviceContext.CodePackageActivationContext.ApplicationName + "/" + this.configSettings.StatelessBackendServiceName;
 
-            IStatelessBackendService proxy = ServiceProxy.Create<IStatelessBackendService>(new Uri(serviceUri));
+            //IStatelessBackendService proxy = ServiceProxy.Create<IStatelessBackendService>(new Uri(serviceUri));
+            var proxyFactory = new CorrelatingServiceProxyFactory(this.serviceContext, callbackClient => new FabricTransportServiceRemotingClientFactory(callbackClient: callbackClient));
+            IStatelessBackendService proxy = proxyFactory.CreateServiceProxy<IStatelessBackendService>(new Uri(serviceUri));
 
             long result = await proxy.GetCountAsync();
 
