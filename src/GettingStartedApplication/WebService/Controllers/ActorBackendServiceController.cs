@@ -8,10 +8,12 @@
 namespace WebService.Controllers
 {
     using ActorBackendService.Interfaces;
+    using Microsoft.ApplicationInsights.ServiceFabric.Remoting.Activities;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.ServiceFabric.Actors;
     using Microsoft.ServiceFabric.Actors.Client;
     using Microsoft.ServiceFabric.Actors.Query;
+    using Microsoft.ServiceFabric.Actors.Remoting.FabricTransport;
     using System;
     using System.Fabric;
     using System.Fabric.Query;
@@ -25,12 +27,14 @@ namespace WebService.Controllers
         private readonly FabricClient fabricClient;
         private readonly ConfigSettings configSettings;
         private readonly StatelessServiceContext serviceContext;
+        private readonly CorrelatingActorProxyFactory actorProxyFactory;
 
         public ActorBackendServiceController(StatelessServiceContext serviceContext, ConfigSettings settings, FabricClient fabricClient)
         {
             this.serviceContext = serviceContext;
             this.configSettings = settings;
             this.fabricClient = fabricClient;
+            this.actorProxyFactory = new CorrelatingActorProxyFactory(serviceContext, callbackClient => new FabricTransportActorRemotingClientFactory(callbackClient));
         }
 
         // GET: api/actorbackendservice
@@ -45,7 +49,8 @@ namespace WebService.Controllers
             foreach (Partition partition in partitions)
             {
                 long partitionKey = ((Int64RangePartitionInformation)partition.PartitionInformation).LowKey;
-                IActorService actorServiceProxy = ActorServiceProxy.Create(new Uri(serviceUri), partitionKey);
+                //IActorService actorServiceProxy = ActorServiceProxy.Create(new Uri(serviceUri), partitionKey);
+                IActorService actorServiceProxy = actorProxyFactory.CreateActorServiceProxy<IActorService>(new Uri(serviceUri), partitionKey);
 
                 ContinuationToken continuationToken = null;
 
@@ -67,10 +72,10 @@ namespace WebService.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync()
         {
-           
             string serviceUri = this.serviceContext.CodePackageActivationContext.ApplicationName + "/" + this.configSettings.ActorBackendServiceName;
 
-            IMyActor proxy = ActorProxy.Create<IMyActor>(ActorId.CreateRandom(), new Uri(serviceUri));
+            //IMyActor proxy = ActorProxy.Create<IMyActor>(ActorId.CreateRandom(), new Uri(serviceUri));
+            IMyActor proxy = actorProxyFactory.CreateActorProxy<IMyActor>(new Uri(serviceUri), ActorId.CreateRandom());
 
             await proxy.StartProcessingAsync(CancellationToken.None);
 

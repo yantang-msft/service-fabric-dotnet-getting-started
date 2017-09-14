@@ -17,6 +17,9 @@ namespace StatelessBackendService
     using Microsoft.ApplicationInsights.ServiceFabric;
     using Microsoft.ServiceFabric.Services.Remoting.FabricTransport.Runtime;
     using Microsoft.ApplicationInsights.ServiceFabric.Remoting.Activities;
+    using Microsoft.ApplicationInsights;
+    using Microsoft.ApplicationInsights.Extensibility;
+    using Microsoft.ApplicationInsights.DataContracts;
 
     /// <summary>
     /// An instance of this class is created for each service instance by the Service Fabric runtime.
@@ -24,14 +27,18 @@ namespace StatelessBackendService
     internal sealed class StatelessBackendService : StatelessService, IStatelessBackendService
     {
         private long iterations = 0;
+        private TelemetryClient client;
 
         public StatelessBackendService(StatelessServiceContext context)
             : base(context)
         {
+            client = new TelemetryClient();
+            FabricTelemetryInitializerExtension.SetServiceCallContext(this.Context);
         }
 
         public Task<long> GetCountAsync()
         {
+            client.TrackTrace(new TraceTelemetry("Processing GetCount request"));
             return Task.FromResult(this.iterations);
         }
 
@@ -41,7 +48,8 @@ namespace StatelessBackendService
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            FabricTelemetryInitializerExtension.SetServiceCallContext(this.Context);
+            var telemetryConfig = TelemetryConfiguration.Active;
+            //telemetryConfig.InstrumentationKey = "7b60216d-2809-409b-8f2e-3ec921e8f502";
 
             return new ServiceInstanceListener[1]
             {

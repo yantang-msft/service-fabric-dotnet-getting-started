@@ -11,6 +11,7 @@ namespace ActorBackendService
     using ActorBackendService.Interfaces;
     using Microsoft.ServiceFabric.Actors;
     using Microsoft.ServiceFabric.Actors.Runtime;
+    using Microsoft.ApplicationInsights.ServiceFabric;
 
     /// <remarks>
     /// This class represents an actor.
@@ -34,6 +35,7 @@ namespace ActorBackendService
         public MyActor(ActorService actorService, ActorId actorId)
             : base(actorService, actorId)
         {
+            FabricTelemetryInitializerExtension.SetServiceCallContext(actorService.Context);
         }
 
         public async Task StartProcessingAsync(CancellationToken cancellationToken)

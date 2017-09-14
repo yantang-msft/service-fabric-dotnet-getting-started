@@ -43,6 +43,15 @@
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.AI.ServiceFabric, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f23a46de0be5d6f3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.ServiceFabric.1.0.0-beta2-build46364\lib\net45\Microsoft.AI.ServiceFabric.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.ServiceFabric.Native, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f23a46de0be5d6f3, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.ServiceFabric.Native.1.0.0-beta2-build46364\lib\net45\Microsoft.AI.ServiceFabric.Native.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.3.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.ServiceFabric.Actors, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
       <HintPath>..\packages\Microsoft.ServiceFabric.Actors.2.6.204\lib\net45\Microsoft.ServiceFabric.Actors.dll</HintPath>
     </Reference>
@@ -88,12 +97,16 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MyActorService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MyActor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ActorEventSource.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ApplicationInsights.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="PackageRoot\ServiceManifest.xml" />
     <None Include="PackageRoot\Config\Settings.xml" />
     <None Include="App.config" />
