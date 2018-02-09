@@ -5,11 +5,14 @@
 
 namespace WebService
 {
+    using Microsoft.ApplicationInsights.DependencyCollector;
+    using Microsoft.ApplicationInsights.Extensibility;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using System.Linq;
 
     public class Startup
     {
@@ -57,6 +60,12 @@ namespace WebService
                         name: "default",
                         template: "{controller=Home}/{action=Index}");
                 });
+
+            // localhost is added to correlation header injection to unblock storage emulator scenario. Revert the limitation to test correlation locally.
+            var modules = app.ApplicationServices.GetServices<ITelemetryModule>();
+            var dependencyModule = modules.OfType<DependencyTrackingTelemetryModule>().FirstOrDefault();
+            dependencyModule.ExcludeComponentCorrelationHttpHeadersOnDomains.Remove("localhost");
+            dependencyModule.ExcludeComponentCorrelationHttpHeadersOnDomains.Remove("127.0.0.1");
         }
     }
 }
