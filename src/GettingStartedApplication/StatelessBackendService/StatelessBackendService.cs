@@ -11,6 +11,8 @@ namespace StatelessBackendService
     using System.Threading;
     using System.Threading.Tasks;
     using global::StatelessBackendService.Interfaces;
+    using Microsoft.ApplicationInsights.Extensibility;
+    using Microsoft.ApplicationInsights.ServiceFabric;
     using Microsoft.ServiceFabric.Services.Communication.Runtime;
     using Microsoft.ServiceFabric.Services.Remoting.Runtime;
     using Microsoft.ServiceFabric.Services.Runtime;
@@ -38,6 +40,9 @@ namespace StatelessBackendService
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
+            FabricTelemetryInitializerExtension.SetServiceCallContext(this.Context);
+            var telemetryConfig = TelemetryConfiguration.Active;
+
             return new ServiceInstanceListener[1]
             {
                 new ServiceInstanceListener(this.CreateServiceRemotingListener)
