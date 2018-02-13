@@ -15,6 +15,7 @@ namespace StatelessBackendService
     using Microsoft.ApplicationInsights.ServiceFabric;
     using Microsoft.ServiceFabric.Services.Communication.Runtime;
     using Microsoft.ServiceFabric.Services.Remoting.Runtime;
+    using Microsoft.ServiceFabric.Services.Remoting.V2.FabricTransport.Runtime;
     using Microsoft.ServiceFabric.Services.Runtime;
 
     /// <summary>
@@ -43,9 +44,20 @@ namespace StatelessBackendService
             FabricTelemetryInitializerExtension.SetServiceCallContext(this.Context);
             var telemetryConfig = TelemetryConfiguration.Active;
 
-            return new ServiceInstanceListener[1]
+            //return new ServiceInstanceListener[1]
+            //{
+            //    new ServiceInstanceListener(this.CreateServiceRemotingListener)
+            //};
+
+            //return this.CreateServiceRemotingInstanceListeners();
+
+            return new[]
             {
-                new ServiceInstanceListener(this.CreateServiceRemotingListener)
+                    new ServiceInstanceListener((c) =>
+                    {
+                        return new FabricTransportServiceRemotingListener(c, this);
+
+                    })
             };
         }
 
@@ -55,6 +67,8 @@ namespace StatelessBackendService
         /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service instance.</param>
         protected override async Task RunAsync(CancellationToken cancellationToken)
         {
+            FabricTelemetryInitializerExtension.SetServiceCallContext(this.Context);
+
             // TODO: Replace the following sample code with your own logic 
             //       or remove this RunAsync override if it's not needed in your service.
 

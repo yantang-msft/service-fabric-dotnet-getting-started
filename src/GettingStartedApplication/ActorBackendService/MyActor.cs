@@ -9,6 +9,7 @@ namespace ActorBackendService
     using System.Threading;
     using System.Threading.Tasks;
     using ActorBackendService.Interfaces;
+    using Microsoft.ApplicationInsights.ServiceFabric;
     using Microsoft.ServiceFabric.Actors;
     using Microsoft.ServiceFabric.Actors.Runtime;
 
@@ -34,6 +35,7 @@ namespace ActorBackendService
         public MyActor(ActorService actorService, ActorId actorId)
             : base(actorService, actorId)
         {
+            FabricTelemetryInitializerExtension.SetServiceCallContext(actorService.Context);
         }
 
         public async Task StartProcessingAsync(CancellationToken cancellationToken)

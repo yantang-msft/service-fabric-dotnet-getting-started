@@ -3,6 +3,10 @@
 //  Licensed under the MIT License (MIT). See License.txt in the repo root for license information.
 // ------------------------------------------------------------
 
+using Microsoft.ServiceFabric.Actors.Remoting.FabricTransport;
+using Microsoft.ServiceFabric.Services.Remoting;
+
+[assembly: FabricTransportActorRemotingProvider(RemotingListener = RemotingListener.V2Listener, RemotingClient = RemotingClient.V2Client)]
 namespace ActorBackendService.Interfaces
 {
     using System.Threading;
