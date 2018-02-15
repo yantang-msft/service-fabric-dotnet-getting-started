@@ -107,7 +107,13 @@ namespace StatefulBackendService.Controllers
                     await tx.CommitAsync();
                 }
 
-                return this.Ok();
+                // Return non empty result to workaround this issue: https://github.com/Microsoft/ApplicationInsights-dotnet-server/issues/739
+                return new ContentResult()
+                {
+                    StatusCode = 200,
+                    Content = "Create succeeded"
+                };
+                //return this.Ok();
             }
             catch (FabricNotPrimaryException)
             {
@@ -147,7 +153,13 @@ namespace StatefulBackendService.Controllers
                 return new ContentResult {StatusCode = 503, Content = "The service was unable to process the request. Please try again."};
             }
 
-            return this.Ok();
+            // Return non empty result to workaround this issue: https://github.com/Microsoft/ApplicationInsights-dotnet-server/issues/739
+            return new ContentResult()
+            {
+                StatusCode = 200,
+                Content = "Create succeeded"
+            };
+            //return this.Ok();
         }
 
         // DELETE api/valuesname
