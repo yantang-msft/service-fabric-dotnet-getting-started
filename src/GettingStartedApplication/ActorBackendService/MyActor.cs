@@ -35,7 +35,7 @@ namespace ActorBackendService
         public MyActor(ActorService actorService, ActorId actorId)
             : base(actorService, actorId)
         {
-            FabricTelemetryInitializerExtension.SetServiceCallContext(actorService.Context);
+            //FabricTelemetryInitializerExtension.SetServiceCallContext(actorService.Context);
         }
 
         public async Task StartProcessingAsync(CancellationToken cancellationToken)
