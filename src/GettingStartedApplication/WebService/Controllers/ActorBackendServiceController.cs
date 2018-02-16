@@ -8,6 +8,7 @@
 namespace WebService.Controllers
 {
     using ActorBackendService.Interfaces;
+    using ActorBackendServiceNetCore.Interfaces;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.ServiceFabric.Actors;
     using Microsoft.ServiceFabric.Actors.Client;
@@ -37,7 +38,8 @@ namespace WebService.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            string serviceUri = this.serviceContext.CodePackageActivationContext.ApplicationName + "/" + this.configSettings.ActorBackendServiceName;
+            //string serviceUri = this.serviceContext.CodePackageActivationContext.ApplicationName + "/" + this.configSettings.ActorBackendServiceName;
+            string serviceUri = this.serviceContext.CodePackageActivationContext.ApplicationName + "/" + this.configSettings.ActorBackendServiceNetCoreName;
 
             ServicePartitionList partitions = await this.fabricClient.QueryManager.GetPartitionListAsync(new Uri(serviceUri));
 
@@ -67,10 +69,11 @@ namespace WebService.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync()
         {
-           
-            string serviceUri = this.serviceContext.CodePackageActivationContext.ApplicationName + "/" + this.configSettings.ActorBackendServiceName;
+            //string serviceUri = this.serviceContext.CodePackageActivationContext.ApplicationName + "/" + this.configSettings.ActorBackendServiceName;
+            //IMyActor proxy = ActorProxy.Create<IMyActor>(ActorId.CreateRandom(), new Uri(serviceUri));
 
-            IMyActor proxy = ActorProxy.Create<IMyActor>(ActorId.CreateRandom(), new Uri(serviceUri));
+            string serviceUri = this.serviceContext.CodePackageActivationContext.ApplicationName + "/" + this.configSettings.ActorBackendServiceNetCoreName;
+            IMyActorNetCore proxy = ActorProxy.Create<IMyActorNetCore>(ActorId.CreateRandom(), new Uri(serviceUri));
 
             await proxy.StartProcessingAsync(CancellationToken.None);
 

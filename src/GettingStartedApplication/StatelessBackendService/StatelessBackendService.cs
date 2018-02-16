@@ -50,7 +50,6 @@ namespace StatelessBackendService
             //};
 
             //return this.CreateServiceRemotingInstanceListeners();
-
             return new[]
             {
                     new ServiceInstanceListener((c) =>

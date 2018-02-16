@@ -15,7 +15,10 @@ namespace WebService.Controllers
     using System.Text;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.ServiceFabric.Services.Remoting.Client;
     using Newtonsoft.Json;
+    using StatefulBackendService.Interfaces;
+    using StatelessBackendService.Interfaces;
 
     [Route("api/[controller]")]
     public class StatefulBackendServiceController : Controller
@@ -117,13 +120,25 @@ namespace WebService.Controllers
         }
 
 
+        //// GET api/values/5
+        //[HttpGet("{id}")]
+        //public string Get(int id)
+        //{
+        //    throw new NotImplementedException("No method implemented to get a specific key/value pair from the Stateful Backend Service");
+        //}
+
         // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> GetRandomAsync()
         {
-            throw new NotImplementedException("No method implemented to get a specific key/value pair from the Stateful Backend Service");
-        }
+            // TODO: 404 not found?
+            string serviceUri = this.serviceContext.CodePackageActivationContext.ApplicationName + "/" + this.configSettings.StatefulBackendServiceName;
 
+            IStatefulBackendService proxy = ServiceProxy.Create<IStatefulBackendService>(new Uri(serviceUri));
+            long result = await proxy.GetCountAsync();
+
+            return this.Json(new CountViewModel() { Count = result });
+        }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]

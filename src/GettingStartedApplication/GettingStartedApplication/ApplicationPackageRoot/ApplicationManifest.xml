@@ -6,15 +6,21 @@
     <Parameter Name="StatefulBackendService_PartitionCount" DefaultValue="2" />
     <Parameter Name="StatefulBackendService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="StatelessBackendService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="StatelessBackendServiceNetCore_InstanceCount" DefaultValue="-1" />
     <Parameter Name="WebService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="WebService_GuestExeBackendServiceName" DefaultValue="GuestExeBackendService" />
     <Parameter Name="WebService_StatefulBackendServiceName" DefaultValue="StatefulBackendService" />
     <Parameter Name="WebService_StatelessBackendServiceName" DefaultValue="StatelessBackendService" />
+    <Parameter Name="WebService_StatelessBackendServiceNetCoreName" DefaultValue="StatelessBackendServiceNetCore" />
     <Parameter Name="WebService_ActorBackendServiceName" DefaultValue="MyActorService" />
+    <Parameter Name="WebService_ActorBackendServiceNetCoreName" DefaultValue="MyActorNetCoreActorService" />
     <Parameter Name="WebService_ReverseProxyPort" DefaultValue="19081" />
     <Parameter Name="MyActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="MyActorService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="MyActorService_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="MyActorNetCoreActorService_PartitionCount" DefaultValue="10" />
+    <Parameter Name="MyActorNetCoreActorService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="MyActorNetCoreActorService_TargetReplicaSetSize" DefaultValue="3" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -32,6 +38,10 @@
     <ConfigOverrides />
   </ServiceManifestImport>
   <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="StatelessBackendServiceNetCorePkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+  </ServiceManifestImport>
+  <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="WebServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
       <ConfigOverride Name="Config">
@@ -40,7 +50,9 @@
             <Parameter Name="GuestExeBackendServiceName" Value="[WebService_GuestExeBackendServiceName]" />
             <Parameter Name="StatefulBackendServiceName" Value="[WebService_StatefulBackendServiceName]" />
             <Parameter Name="StatelessBackendServiceName" Value="[WebService_StatelessBackendServiceName]" />
+            <Parameter Name="StatelessBackendServiceNetCoreName" Value="[WebService_StatelessBackendServiceNetCoreName]" />
             <Parameter Name="ActorBackendServiceName" Value="[WebService_ActorBackendServiceName]" />
+            <Parameter Name="ActorBackendServiceNetCoreName" Value="[WebService_ActorBackendServiceNetCoreName]" />
             <Parameter Name="ReverseProxyPort" Value="[WebService_ReverseProxyPort]" />
           </Section>
         </Settings>
@@ -49,6 +61,9 @@
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="ActorBackendServicePkg" ServiceManifestVersion="1.0.0" />
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="ActorBackendServiceNetCorePkg" ServiceManifestVersion="1.0.0" />
   </ServiceManifestImport>
   <DefaultServices>
     <!-- The section below creates instances of service types, when an instance of this 
@@ -71,6 +86,11 @@
         <SingletonPartition />
       </StatelessService>
     </Service>
+    <Service Name="StatelessBackendServiceNetCore" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="StatelessBackendServiceNetCoreType" InstanceCount="[StatelessBackendServiceNetCore_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
     <Service Name="WebService">
       <StatelessService ServiceTypeName="WebServiceType" InstanceCount="[WebService_InstanceCount]">
         <SingletonPartition />
@@ -79,6 +99,11 @@
     <Service Name="MyActorService" GeneratedIdRef="8ee0b536-a5bd-4862-ae99-122d1c45ef10|Persisted">
       <StatefulService ServiceTypeName="MyActorServiceType" TargetReplicaSetSize="[MyActorService_TargetReplicaSetSize]" MinReplicaSetSize="[MyActorService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[MyActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      </StatefulService>
+    </Service>
+    <Service Name="MyActorNetCoreActorService" GeneratedIdRef="5b6fe434-12e7-47ee-8dd6-e4237d992c0e|Persisted">
+      <StatefulService ServiceTypeName="MyActorNetCoreActorServiceType" TargetReplicaSetSize="[MyActorNetCoreActorService_TargetReplicaSetSize]" MinReplicaSetSize="[MyActorNetCoreActorService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[MyActorNetCoreActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
       </StatefulService>
     </Service>
   </DefaultServices>

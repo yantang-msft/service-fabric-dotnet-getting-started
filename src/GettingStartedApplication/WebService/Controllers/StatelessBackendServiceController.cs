@@ -14,6 +14,7 @@ namespace WebService.Controllers
     using System.Fabric;
     using System;
     using Microsoft.ServiceFabric.Services.Remoting.V2.FabricTransport.Client;
+    using StatefulBackendService.Interfaces;
 
     [Route("api/[controller]")]
     public class StatelessBackendServiceController : Controller
@@ -31,7 +32,8 @@ namespace WebService.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            string serviceUri = this.serviceContext.CodePackageActivationContext.ApplicationName + "/" + this.configSettings.StatelessBackendServiceName;
+            //string serviceUri = this.serviceContext.CodePackageActivationContext.ApplicationName + "/" + this.configSettings.StatelessBackendServiceName;
+            string serviceUri = this.serviceContext.CodePackageActivationContext.ApplicationName + "/" + this.configSettings.StatelessBackendServiceNetCoreName;
 
             //IStatelessBackendService proxy = ServiceProxy.Create<IStatelessBackendService>(new Uri(serviceUri));
             var proxyFactory = new ServiceProxyFactory((c) =>

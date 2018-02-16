@@ -22,7 +22,11 @@ namespace WebService
 
         public string StatelessBackendServiceName { get; private set; }
 
+        public string StatelessBackendServiceNetCoreName { get; private set; }
+
         public string ActorBackendServiceName { get; private set; }
+
+        public string ActorBackendServiceNetCoreName { get; private set; }
 
         public int ReverseProxyPort { get; private set; }
 
@@ -38,7 +42,9 @@ namespace WebService
             this.GuestExeBackendServiceName = section.Parameters["GuestExeBackendServiceName"].Value;
             this.StatefulBackendServiceName = section.Parameters["StatefulBackendServiceName"].Value;
             this.StatelessBackendServiceName = section.Parameters["StatelessBackendServiceName"].Value;
+            this.StatelessBackendServiceNetCoreName = section.Parameters["StatelessBackendServiceNetCoreName"].Value;
             this.ActorBackendServiceName = section.Parameters["ActorBackendServiceName"].Value;
+            this.ActorBackendServiceNetCoreName = section.Parameters["ActorBackendServiceNetCoreName"].Value;
             this.ReverseProxyPort = int.Parse(section.Parameters["ReverseProxyPort"].Value);
         }
     }

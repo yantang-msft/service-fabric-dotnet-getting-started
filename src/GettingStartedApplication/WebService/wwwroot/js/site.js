@@ -41,6 +41,30 @@ function getGuestExeBackendService() {
     http.send();
 }
 
+/* This function calls the StatefulBackendController's HTTP GET method to get a random number in the StatefulBackendService */
+function getStatefulBackendServiceRandom() {
+    var http = new XMLHttpRequest();
+    http.onreadystatechange = function () {
+        if (http.readyState === 4) {
+            end = new Date().getTime();
+            if (http.status < 400) {
+                returnData = JSON.parse(http.responseText);
+                if (returnData) {
+                    //renderStatefulBackendServiceDictionary(returnData);
+                    updateFooter(http, (end - start) + ", random number: " + returnData);
+                    //postMessage("Got all KeyValuePairs in  " + (end - start).toString() + "ms.", "success", true);
+                }
+            } else {
+                updateFooter(http, (end - start));
+                //postMessage(http.statusText, "danger", true);
+            }
+        }
+    };
+    start = new Date().getTime();
+    http.open("GET", "/api/StatefulBackendService/10?c=" + start);
+    http.send();
+}
+
 /* This function calls the StatefulBackendController's HTTP GET method to get a collection of KeyValuePairs from the reliable dictionary in the StatefulBackendService */
 function getStatefulBackendServiceDictionary() {
     var http = new XMLHttpRequest();

@@ -5,8 +5,10 @@
   <Section Name="MyConfigSection">
     <Parameter Name="GuestExeBackendServiceName" Value="" MustOverride="true" />
     <Parameter Name="StatelessBackendServiceName" Value="" MustOverride="true" />
+    <Parameter Name="StatelessBackendServiceNetCoreName" Value="" MustOverride="true" />
     <Parameter Name="StatefulBackendServiceName" Value="" MustOverride="true" />
     <Parameter Name="ActorBackendServiceName" Value="" MustOverride="true" />
+    <Parameter Name="ActorBackendServiceNetCoreName" Value="" MustOverride="true" />
     <Parameter Name="ReverseProxyPort" Value="" MustOverride="true" />
   </Section>
   
