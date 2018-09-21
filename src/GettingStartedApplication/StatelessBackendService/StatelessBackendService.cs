@@ -54,7 +54,7 @@ namespace StatelessBackendService
             return new ServiceInstanceListener[1]
             {
                 //new ServiceInstanceListener(this.CreateServiceRemotingListener)
-                new ServiceInstanceListener(context => new FabricTransportServiceRemotingListener(context, new CorrelatingRemotingMessageHandler(context, this)))
+                new ServiceInstanceListener(context => new Microsoft.ServiceFabric.Services.Remoting.V1.FabricTransport.Runtime.FabricTransportServiceRemotingListener(context, new CorrelatingRemotingMessageHandler(context, this)))
             };
         }
 

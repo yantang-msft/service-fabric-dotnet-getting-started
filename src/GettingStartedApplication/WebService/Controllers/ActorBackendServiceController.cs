@@ -34,7 +34,7 @@ namespace WebService.Controllers
             this.serviceContext = serviceContext;
             this.configSettings = settings;
             this.fabricClient = fabricClient;
-            this.actorProxyFactory = new CorrelatingActorProxyFactory(serviceContext, callbackClient => new FabricTransportActorRemotingClientFactory(callbackClient));
+            this.actorProxyFactory = new CorrelatingActorProxyFactory(serviceContext, callbackClient => new Microsoft.ServiceFabric.Actors.Remoting.V1.FabricTransport.Client.FabricTransportActorRemotingClientFactory(callbackClient));
         }
 
         // GET: api/actorbackendservice
